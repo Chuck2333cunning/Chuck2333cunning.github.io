@@ -2,40 +2,34 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Flashcards Histoire-Géo</title>
+  <title>Flashcards - Éditeur</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <h1>✍️ Éditeur de cartes</h1>
-  <form id="addForm">
-    Catégorie: <input type="text" id="cat"><br>
-    Question:<br><textarea id="q"></textarea><br>
-    Réponse:<br><textarea id="a"></textarea><br>
-    <button type="submit">Ajouter</button>
+
+  <form method="POST" action="/add_card">
+    <label>Catégorie :</label>
+    <input type="text" name="cat"><br>
+    <label>Question :</label><br>
+    <textarea name="q"></textarea><br>
+    <label>Réponse :</label><br>
+    <textarea name="a"></textarea><br>
+    <button type="submit">➕ Ajouter</button>
   </form>
 
-  <h2>Cartes existantes</h2>
-  <ul id="cardList"></ul>
+  <h2>Cartes du jeu</h2>
+  <ul>
+    {% for i, c in enumerate(deck.cards) %}
+      <li>[{{ c.cat or "—" }}] {{ c.q }} 
+        <a href="/delete/{{ i }}">🗑️</a>
+      </li>
+    {% endfor %}
+  </ul>
 
-  <a href="/quiz">🔥 Démarrer le quiz</a>
-
-  <script>
-  document.getElementById("addForm").onsubmit = async (e) => {
-      e.preventDefault();
-      let data = {
-          cat: document.getElementById("cat").value,
-          q: document.getElementById("q").value,
-          a: document.getElementById("a").value
-      };
-      let res = await fetch("/add_card", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(data)
-      });
-      let result = await res.json();
-      if(result.error) alert(result.error);
-      else location.reload();
-  }
-  </script>
+  <p>
+    <a href="/quiz">🔥 Démarrer le quiz</a> | 
+    <a href="/save">💾 Sauvegarder</a>
+  </p>
 </body>
 </html>

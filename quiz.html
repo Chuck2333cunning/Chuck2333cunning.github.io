@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Flashcards - Quiz</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    let order = {{ order|tojson }};
+    let cards = {{ deck.cards|tojson }};
+    let index = 0;
+    let score = 0;
+
+    function showCard() {
+      if(index >= order.length) {
+        document.getElementById("quiz").innerHTML =
+          `<h2>Quiz terminé ! Score: ${score}/${order.length}</h2>
+           <a href='/'>⬅️ Retour</a>`;
+        return;
+      }
+      let c = cards[order[index]];
+      document.getElementById("cat").innerText = c.cat || "—";
+      document.getElementById("q").innerText = c.q;
+      document.getElementById("a").innerText = "— Réponse masquée —";
+    }
+
+    function reveal() {
+      let c = cards[order[index]];
+      document.getElementById("a").innerText = c.a;
+    }
+
+    function mark(correct) {
+      if(correct) score++;
+      index++;
+      showCard();
+    }
+
+    window.onload = showCard;
+  </script>
+</head>
+<body>
+  <h1>🔥 Quiz</h1>
+  <div id="quiz">
+    <p>Catégorie: <span id="cat"></span></p>
+    <p><b>Question:</b> <span id="q"></span></p>
+    <p><b>Réponse:</b> <span id="a"></span></p>
+
+    <button onclick="reveal()">👀 Révéler</button>
+    <button onclick="mark(false)">❌ Faux</button>
+    <button onclick="mark(true)">✅ Vrai</button>
+  </div>
+</body>
+</html>

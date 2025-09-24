@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Rapide avec Confettis</title>
-    <link rel="stylesheet" type="text/css" href="pong.20.css" />
+  <meta charset="UTF-8">
+  <title>Flashcards Histoire-Géo</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div id="gameContainer">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-        <div id="leftScore" class="score">0</div>
-        <div id="rightScore" class="score">0</div>
-        <div class="instructions">
-            <div><strong>Joueur Gauche:</strong> W / S &nbsp;&nbsp;&nbsp; <strong>Joueur Droit:</strong> ↑ / ↓</div>
-            <div><strong>PONG RAPIDE</strong> - Les confettis explosent à chaque impact ! 🎊</div>
-        </div>
-    </div>
-<script src="pong.20.js"></script>
+  <h1>✍️ Éditeur de cartes</h1>
+  <form id="addForm">
+    Catégorie: <input type="text" id="cat"><br>
+    Question:<br><textarea id="q"></textarea><br>
+    Réponse:<br><textarea id="a"></textarea><br>
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <h2>Cartes existantes</h2>
+  <ul id="cardList"></ul>
+
+  <a href="/quiz">🔥 Démarrer le quiz</a>
+
+  <script>
+  document.getElementById("addForm").onsubmit = async (e) => {
+      e.preventDefault();
+      let data = {
+          cat: document.getElementById("cat").value,
+          q: document.getElementById("q").value,
+          a: document.getElementById("a").value
+      };
+      let res = await fetch("/add_card", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+      });
+      let result = await res.json();
+      if(result.error) alert(result.error);
+      else location.reload();
+  }
+  </script>
 </body>
 </html>
